@@ -27,10 +27,3 @@ pub fn compute_residue(
     b.sub_to(&residue, &mut residue_update);
     residue_update
 }
-
-pub enum Method {
-    JA,
-    GS,
-    GR,
-    CG,
-}

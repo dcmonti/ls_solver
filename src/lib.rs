@@ -1,3 +1,5 @@
+pub mod api;
+pub mod cg_solve;
 pub mod gradient_solve;
 pub mod gs_solve;
 pub mod io;

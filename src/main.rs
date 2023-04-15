@@ -1,7 +1,4 @@
-use ls_solver::{
-    io, solver,
-    utility::{self, Method},
-};
+use ls_solver::{api::Method, io, solver, utility};
 use nalgebra::{self, DVector};
 
 fn main() {
@@ -18,6 +15,6 @@ fn main() {
         Method::JA => solver::exec(&a, &b, Method::JA, tol, max_iter, omega),
         Method::GS => solver::exec(&a, &b, Method::GS, tol, max_iter, omega),
         Method::GR => solver::exec(&a, &b, Method::GR, tol, max_iter, omega),
-        _ => {}
+        Method::CG => solver::exec(&a, &b, Method::CG, tol, max_iter, omega),
     }
 }

@@ -1,4 +1,4 @@
-use crate::utility::Method;
+use crate::api::Method;
 use clap::Parser;
 use nalgebra_sparse as nasp;
 use nasp::CscMatrix;
