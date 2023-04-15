@@ -1,12 +1,11 @@
 use crate::{
+    gradient_solve,
     gs_solve::{get_gs_p, get_gs_update},
     jacobi_solve::{get_jacobi_p, get_jacobi_update},
-    utility::{self, Method}, gradient_solve,
+    utility::{self, Method},
 };
 use nalgebra::{self, DVector};
-use nalgebra_sparse::{
-    CscMatrix,
-};
+use nalgebra_sparse::CscMatrix;
 
 pub fn exec(
     a: &CscMatrix<f64>,
@@ -22,9 +21,7 @@ pub fn exec(
     let p = match method {
         Method::JA => Some(get_jacobi_p(a, omega)),
         Method::GS => Some(get_gs_p(a, omega)),
-        Method::GR => {
-            None
-        }
+        Method::GR => None,
         Method::CG => {
             todo!()
         }
@@ -48,13 +45,14 @@ pub fn exec(
             Method::JA => {
                 let update = get_jacobi_update(&p.as_ref().unwrap(), &residue);
                 x += update;
-            },
+            }
             Method::GS => {
                 let update = get_gs_update(&p.as_ref().unwrap(), &residue);
-                x += update},
+                x += update
+            }
             Method::GR => {
                 let alpha = gradient_solve::get_alpha_k(a, &residue);
-                x += alpha*residue;
+                x += alpha * residue;
             }
             Method::CG => {
                 todo!()
