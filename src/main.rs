@@ -16,6 +16,7 @@ fn main() {
     match method {
         Method::JA => solver::exec(&a, &b, Method::JA, tol, max_iter, omega),
         Method::GS => solver::exec(&a, &b, Method::GS, tol, max_iter, omega),
+        Method::GR => solver::exec(&a, &b, Method::GR, tol, max_iter, omega),
         _ => {}
     }
 }

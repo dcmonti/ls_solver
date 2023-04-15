@@ -1,7 +1,7 @@
 use crate::{
     gs_solve::{get_gs_p, get_gs_update},
     jacobi_solve::{get_jacobi_p, get_jacobi_update},
-    utility::{self, Method},
+    utility::{self, Method}, gradient_solve,
 };
 use nalgebra::{self, DVector};
 use nalgebra_sparse::{
@@ -21,10 +21,10 @@ pub fn exec(
     let b_norm = b.norm();
 
     let p = match method {
-        Method::JA => get_jacobi_p(a, omega),
-        Method::GS => get_gs_p(a, omega),
+        Method::JA => Some(get_jacobi_p(a, omega)),
+        Method::GS => Some(get_gs_p(a, omega)),
         Method::GR => {
-            todo!()
+            None
         }
         Method::CG => {
             todo!()
@@ -45,18 +45,23 @@ pub fn exec(
             break;
         }
 
-        let update = match method {
-            Method::JA => get_jacobi_update(&p, &residue),
-            Method::GS => get_gs_update(&p, &residue),
+        match method {
+            Method::JA => {
+                let update = get_jacobi_update(&p.as_ref().unwrap(), &residue);
+                x += update;
+            },
+            Method::GS => {
+                let update = get_gs_update(&p.as_ref().unwrap(), &residue);
+                x += update},
             Method::GR => {
-                todo!()
+                let alpha = gradient_solve::get_alpha_k(a, &residue);
+                x += alpha*residue;
             }
             Method::CG => {
                 todo!()
             }
         };
 
-        x += update;
         count += 1;
     }
     if !tol_reached {
