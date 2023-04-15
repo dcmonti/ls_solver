@@ -1,8 +1,9 @@
 use ls_solver::{
-    gs_solve, io, jacobi_solve, solver,
+    io, solver,
     utility::{self, Method},
 };
 use nalgebra::{self, DVector};
+
 fn main() {
     let a = io::read_matrix();
     let tol = io::get_tol();

@@ -1,8 +1,6 @@
-use crate::utility;
 use nalgebra::{self, DVector};
 use nalgebra_sparse::{
-    ops::{serial::spmm_csc_dense, Op},
-    CooMatrix, CscMatrix,
+    ops::{serial::spmm_csc_dense, Op}, CscMatrix,
 };
 
 pub fn get_alpha_k(a: &CscMatrix<f64>, residue: &DVector<f64>) -> f64 {

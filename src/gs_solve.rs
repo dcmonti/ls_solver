@@ -1,4 +1,4 @@
-use crate::utility;
+
 use nalgebra::{self, DVector};
 use nalgebra_sparse::{
     ops::{serial::spsolve_csc_lower_triangular, Op},
