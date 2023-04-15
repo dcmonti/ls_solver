@@ -1,6 +1,7 @@
+use crate::utility::Method;
 use clap::Parser;
 use nalgebra_sparse as nasp;
-use nasp::CsrMatrix;
+use nasp::CscMatrix;
 
 #[derive(Parser, Debug)]
 #[clap(
@@ -59,16 +60,22 @@ fn get_matrix_path() -> String {
     args.matrix_path
 }
 
-pub fn read_matrix() -> CsrMatrix<f64> {
+pub fn read_matrix() -> CscMatrix<f64> {
     let file_path = get_matrix_path();
     let sparse_matrix = nasp::io::load_coo_from_matrix_market_file(file_path).unwrap();
-    let csr_matrix = CsrMatrix::from(&sparse_matrix);
-    csr_matrix
+    let csc_matrix = CscMatrix::from(&sparse_matrix);
+    csc_matrix
 }
 
-pub fn get_method() -> i32 {
+pub fn get_method() -> Method {
     let args = Args::parse();
-    args.method
+    match args.method {
+        0 => Method::JA,
+        1 => Method::GS,
+        2 => Method::GR,
+        3 => Method::CG,
+        _ => panic!("Value must be between 0 and 3, try --help for more information"),
+    }
 }
 
 pub fn get_tol() -> f64 {

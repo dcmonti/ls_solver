@@ -1,6 +1,8 @@
-use ls_solver::{io, jacobi, utility};
+use ls_solver::{
+    gs_solve, io, jacobi_solve, solver,
+    utility::{self, Method},
+};
 use nalgebra::{self, DVector};
-
 fn main() {
     let a = io::read_matrix();
     let tol = io::get_tol();
@@ -12,7 +14,8 @@ fn main() {
 
     let method = io::get_method();
     match method {
-        0 => jacobi::jacobi_solve(&a, omega, &b, tol, max_iter),
+        Method::JA => solver::exec(&a, &b, Method::JA, tol, max_iter, omega),
+        Method::GS => solver::exec(&a, &b, Method::GS, tol, max_iter, omega),
         _ => {}
     }
 }
