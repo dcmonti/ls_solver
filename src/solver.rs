@@ -1,9 +1,11 @@
+use std::time::Instant;
+
 use crate::{
     api::Method,
     cg_solve, gradient_solve,
     gs_solve::{get_gs_p, get_gs_update},
     jacobi_solve::{get_jacobi_p, get_jacobi_update},
-    utility,
+    utility::{self, Stat},
 };
 use nalgebra::{self, DVector};
 use nalgebra_sparse::CscMatrix;
@@ -16,6 +18,7 @@ pub fn exec(
     max_iter: i32,
     omega: f64,
 ) {
+    let start = Instant::now();
     let size = a.ncols();
     let b_norm = b.norm();
 
@@ -38,26 +41,30 @@ pub fn exec(
     while count < max_iter {
         let residue_norm = residue.norm();
         if utility::tolerance_reached(tol, residue_norm, b_norm) {
-            println!("{:?}", x);
+            // TODO: definitive output
+            let duration = start.elapsed().as_millis();
+            let sol: Vec<f64> = x.into_iter().map(|val| *val).collect();
+            let statistics = Stat::new(sol, duration, count as u32);
+            println!("{}", statistics.to_string());
             tol_reached = true;
             break;
         }
 
         match method {
             Method::JA => {
-                residue = utility::compute_residue(a, &x, b, size);
                 let update = get_jacobi_update(&p.as_ref().unwrap(), &residue);
                 x += update;
+                residue = utility::compute_residue(a, &x, b, size);
             }
             Method::GS => {
-                residue = utility::compute_residue(a, &x, b, size);
                 let update = get_gs_update(&p.as_ref().unwrap(), &residue);
-                x += update
+                x += update;
+                residue = utility::compute_residue(a, &x, b, size);
             }
             Method::GR => {
-                residue = utility::compute_residue(a, &x, b, size);
                 let alpha = gradient_solve::get_alpha_k(a, &residue);
                 x += alpha * &residue;
+                residue = utility::compute_residue(a, &x, b, size);
             }
             Method::CG => {
                 // compute alpha and update x
@@ -78,5 +85,4 @@ pub fn exec(
     if !tol_reached {
         panic!("Method didn't converged")
     }
-    println!("ITERATIONS: {count}");
 }

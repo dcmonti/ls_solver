@@ -3,7 +3,41 @@ use nalgebra_sparse::{
     ops::{serial::spmm_csc_dense, Op},
     CscMatrix,
 };
+pub struct Stat {
+    solution: Vec<f64>,
+    time: u128,
+    iter: u32,
+}
 
+impl Stat {
+    pub fn new(solution: Vec<f64>, time: u128, iter: u32) -> Stat {
+        Stat {
+            solution,
+            time,
+            iter,
+        }
+    }
+    pub fn get_solution(&self) -> &Vec<f64> {
+        self.solution.as_ref()
+    }
+
+    pub fn get_time(&self) -> u128 {
+        self.time
+    }
+
+    pub fn get_iterations(&self) -> u32 {
+        self.iter
+    }
+
+    pub fn to_string(&self) -> String {
+        format!(
+            "Result:\n{:?}\nMethod converged in \t{} iterations \t({} ms)",
+            self.get_solution(),
+            self.get_iterations(),
+            self.get_time()
+        )
+    }
+}
 pub fn tolerance_reached(tol: f64, residue_norm: f64, b_norm: f64) -> bool {
     residue_norm / b_norm < tol
 }
