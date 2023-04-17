@@ -93,13 +93,27 @@ pub fn read_vector() -> DVector<f64> {
     let file_path = get_vector_path();
     let coo_matrix:CooMatrix<f64> = nasp::io::load_coo_from_matrix_market_file(file_path).unwrap();
 
-    if coo_matrix.ncols() != 1 && coo_matrix.nrows() != 1 {
-        panic!("File in {} is not a vector", get_vector_path())
-    }
-    // TODO: better impl, check dimension, implement setting
-    let mut vector = DVector::from_element(coo_matrix.nrows(), 0.0);
-    for (i, _, val) in coo_matrix.triplet_iter() {
-        vector[i] = *val;
+    let mut row_m = false;
+    let mut vector = match (coo_matrix.ncols(), coo_matrix.nrows()) {
+        (1, _) => {
+            row_m = true;
+            DVector::from_element(coo_matrix.nrows(), 0.0)
+        }
+        (_, 1) => {
+            DVector::from_element(coo_matrix.ncols(), 0.0)
+        }
+        _ => {panic!("Vector file wrong format")}
+    };
+    
+    // TODO: better impl, check dimension, implement setting, in solver check dimension correct for A
+    if row_m {
+        for (row, _, val) in coo_matrix.triplet_iter() {
+            vector[row] = *val;
+        }
+    } else {
+        for (_, col, val) in coo_matrix.triplet_iter() {
+            vector[col] = *val;
+        }
     }
     vector
 }
