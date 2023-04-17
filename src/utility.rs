@@ -3,6 +3,8 @@ use nalgebra_sparse::{
     ops::{serial::spmm_csc_dense, Op},
     CscMatrix,
 };
+
+#[derive(Debug)]
 pub struct Stat {
     solution: Vec<f64>,
     time: u128,
@@ -38,6 +40,13 @@ impl Stat {
         )
     }
 }
+
+#[derive(Debug)]
+pub enum Setting {
+    Solve,
+    Precision,
+    Default,
+}
 pub fn tolerance_reached(tol: f64, residue_norm: f64, b_norm: f64) -> bool {
     residue_norm / b_norm < tol
 }
@@ -60,4 +69,15 @@ pub fn compute_residue(
     let mut residue_update = DVector::from_element(size, 0.0);
     b.sub_to(&residue, &mut residue_update);
     residue_update
+}
+
+pub fn size_are_compatible(a: &CscMatrix<f64>, vector: &DVector<f64>, setting: &Setting) {
+    match setting {
+        Setting::Precision | Setting::Solve => {
+            if a.ncols() != vector.nrows() {
+                panic!("Vector has wrong size for matrix")
+            }
+        }
+        _ => {}
+    }
 }

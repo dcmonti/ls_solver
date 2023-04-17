@@ -1,38 +1,46 @@
 use core::panic;
 
-use crate::api::Method;
+use crate::{api::Method, utility::Setting};
 use clap::Parser;
 use nalgebra::DVector;
 use nalgebra_sparse as nasp;
-use nasp::{CscMatrix, CooMatrix, coo};
+use nasp::{CooMatrix, CscMatrix};
 
 #[derive(Parser, Debug)]
 #[clap(
-    author = "Davide Monti <d.monti11@campus.unimib.it>",
+    author = "Davide Monti <d.monti11@campus.unimib.it>\nSamuele Campanella <s.campanella3@campus.unimib.it>",
     version,
     about = "ls_solver",
     long_about = "Simple tool and library for linear system solution"
 )]
 struct Args {
-    #[clap(help = "Input matrix (in .mtx format)", required = true)]
+    #[clap(
+        help_heading = "I/O",
+        help = "Input matrix (in .mtx format)",
+        required = true
+    )]
     matrix_path: String,
 
-    #[clap(help = "Input vector", default_value = "None")]
+    #[clap(
+        help_heading = "I/O",
+        help = "Input vector (in .mtx format).\nIf not specified x := [1 1 ... 1] and b := ax",
+        default_value = "None"
+    )]
     vector_path: String,
 
     // Iterative method
     #[clap(
-        help_heading = "Iterative Method",
+        help_heading = "Settings",
         short = 'm',
         long = "method",
         default_value_t = 0,
-        help = "0: Jacobi, 1: Gauß-Seidel, 2: gradient, 3: conjugate gradient"
+        help = "0: Jacobi\n1: Gauß-Seidel\n2: gradient\n3: conjugate gradient"
     )]
     method: i32,
 
     // Tolerance
     #[clap(
-        help_heading = "Tolerance",
+        help_heading = "Settings",
         short = 't',
         long = "tolerance",
         default_value_t = 4,
@@ -42,7 +50,7 @@ struct Args {
 
     // Max Steps
     #[clap(
-        help_heading = "Max iteration",
+        help_heading = "Settings",
         short = 'i',
         long = "max_iter",
         default_value_t = 20000,
@@ -52,24 +60,23 @@ struct Args {
 
     // Omega
     #[clap(
-        help_heading = "Relax factor",
+        help_heading = "Settings",
         short = 'o',
         long = "omega",
         default_value_t = 1.0,
-        help = "Set relax factor with float in (0,1]"
+        help = "Set relax factor with float desired\nUsed only if method is 0 or 1"
     )]
     omega: f64,
 
     // Settings
     #[clap(
-        help_heading = "Set running mode",
+        help_heading = "Settings",
         short = 's',
-        long = "setting",
+        long = "set-mode",
         default_value_t = 0,
-        help = "0: consider vector as b and solve the system Ax=b\n1: consider vector as x and evaluate method precision"
+        help = "Used only if [VECTOR_PATH] is specified\n0: consider vector as b and solve the system Ax=b\n1: consider vector as x and evaluate method precision"
     )]
     setting: i32,
-
 }
 
 fn get_matrix_path() -> String {
@@ -88,33 +95,37 @@ pub fn read_matrix() -> CscMatrix<f64> {
     let csc_matrix = CscMatrix::from(&sparse_matrix);
     csc_matrix
 }
-
-pub fn read_vector() -> DVector<f64> {
+pub fn read_vector() -> (DVector<f64>, Setting) {
     let file_path = get_vector_path();
-    let coo_matrix:CooMatrix<f64> = nasp::io::load_coo_from_matrix_market_file(file_path).unwrap();
+    if file_path.eq(&"None") {
+        (DVector::from_element(1, 0.0), Setting::Default)
+    } else {
+        (parse_vector(&file_path), get_setting())
+    }
+}
+fn parse_vector(file_path: &String) -> DVector<f64> {
+    let coo_matrix: CooMatrix<f64> = nasp::io::load_coo_from_matrix_market_file(file_path).unwrap();
 
-    let mut row_m = false;
-    let mut vector = match (coo_matrix.ncols(), coo_matrix.nrows()) {
+    let vector = match (coo_matrix.ncols(), coo_matrix.nrows()) {
         (1, _) => {
-            row_m = true;
-            DVector::from_element(coo_matrix.nrows(), 0.0)
+            let mut tmp_vector = DVector::from_element(coo_matrix.nrows(), 0.0);
+            for (row, _, val) in coo_matrix.triplet_iter() {
+                tmp_vector[row] = *val;
+            }
+            tmp_vector
         }
         (_, 1) => {
-            DVector::from_element(coo_matrix.ncols(), 0.0)
+            let mut tmp_vector = DVector::from_element(coo_matrix.ncols(), 0.0);
+            for (_, col, val) in coo_matrix.triplet_iter() {
+                tmp_vector[col] = *val;
+            }
+            tmp_vector
         }
-        _ => {panic!("Vector file wrong format")}
+        _ => {
+            panic!("Vector file wrong format")
+        }
     };
-    
-    // TODO: better impl, check dimension, implement setting, in solver check dimension correct for A
-    if row_m {
-        for (row, _, val) in coo_matrix.triplet_iter() {
-            vector[row] = *val;
-        }
-    } else {
-        for (_, col, val) in coo_matrix.triplet_iter() {
-            vector[col] = *val;
-        }
-    }
+
     vector
 }
 
@@ -149,10 +160,11 @@ pub fn get_omega() -> f64 {
     omega
 }
 
-fn get_setting() -> i32 {
+fn get_setting() -> Setting {
     let args = Args::parse();
     match args.setting {
-        0 | 1 => args.setting,
-        _ => panic!("-s must be 0 or 1, try --help for more info")
+        0 => Setting::Solve,
+        1 => Setting::Precision,
+        _ => panic!("-s must be 0 or 1, try --help for more info"),
     }
 }

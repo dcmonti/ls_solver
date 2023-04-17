@@ -3,6 +3,7 @@ use nalgebra_sparse::{io::load_coo_from_matrix_market_file, CscMatrix};
 
 use crate::solver;
 
+#[derive(Debug)]
 pub enum Method {
     JA,
     GS,

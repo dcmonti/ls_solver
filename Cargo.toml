@@ -2,6 +2,7 @@
 name = "ls_solver"
 version = "0.1.0"
 edition = "2021"
+authors = ["Davide Monti <d.monti11@campus.unimib.it>", "Samuele Campanella <s.campanella3@campus.unimib.it>"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
