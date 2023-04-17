@@ -7,6 +7,9 @@ fn main() {
     let max_iter = io::get_max_iter();
     let omega = io::get_omega();
 
+    let v = io::read_vector();
+    println!("{:?}", v);
+
     let solution = DVector::from_element(a.ncols(), 1.0);
     let b = utility::init_b(&solution, &a);
 
