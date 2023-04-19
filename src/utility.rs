@@ -57,6 +57,7 @@ pub fn init_b(solution: &DVector<f64>, a: &CscMatrix<f64>) -> DVector<f64> {
     b
 }
 
+#[inline]
 pub fn compute_residue(
     a: &CscMatrix<f64>,
     x: &DVector<f64>,

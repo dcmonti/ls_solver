@@ -4,10 +4,12 @@ use nalgebra_sparse::{
     CscMatrix,
 };
 
+#[inline]
 pub fn get_gs_p(a: &CscMatrix<f64>, omega: f64) -> CscMatrix<f64> {
     a.lower_triangle() / omega
 }
 
+#[inline]
 pub fn get_gs_update(p_lt: &CscMatrix<f64>, residue: &DVector<f64>) -> DVector<f64> {
     let mut update = DVector::from_element(residue.nrows(), 0.0);
     update += residue;

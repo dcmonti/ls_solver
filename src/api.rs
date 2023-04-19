@@ -16,7 +16,7 @@ pub enum Method {
 pub struct Performance {
     pub rel_err: f64,
     pub time: u128,
-    pub iter: i32,
+    pub iter: u32,
 }
 
 pub fn read_matrix_from_matrix_market_file(file_path: &String) -> CscMatrix<f64> {

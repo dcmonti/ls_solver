@@ -4,6 +4,7 @@ use nalgebra_sparse::{
     CscMatrix,
 };
 
+#[inline]
 pub fn get_alpha_k(a: &CscMatrix<f64>, residue: &DVector<f64>) -> f64 {
     let num = residue.dot(residue);
 
