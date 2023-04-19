@@ -19,24 +19,27 @@ fn main() {
             let solution = DVector::from_element(a.ncols(), 1.0);
             let b = utility::init_b(&solution, &a);
             let result = solver::exec(&a, &b, method, tol, max_iter, omega);
-            println!("Relative Error: {}\nIteration: {}\nTime: {} ms", utility::compute_rel_err(&solution, result.get_solution())
-                                                                , result.get_iterations(),
-                                                                result.get_time())
+            println!(
+                "Relative Error: {}\nIteration: {}\nTime: {} ms",
+                utility::compute_rel_err(&solution, result.get_solution()),
+                result.get_iterations(),
+                result.get_time()
+            )
         }
         Setting::Precision => {
             // solution is vector
             let b = utility::init_b(&vector, &a);
             let result = solver::exec(&a, &b, method, tol, max_iter, omega);
-            println!("Relative Error: {}\nIteration: {}\nTime: {} ms", utility::compute_rel_err(&vector, result.get_solution())
-                                                                , result.get_iterations(),
-                                                                result.get_time())
+            println!(
+                "Relative Error: {}\nIteration: {}\nTime: {} ms",
+                utility::compute_rel_err(&vector, result.get_solution()),
+                result.get_iterations(),
+                result.get_time()
+            )
         }
         Setting::Solve => {
             let result = solver::exec(&a, &vector, method, tol, max_iter, omega);
             println!("{}", result.to_string())
         }
-
-
     }
-
 }

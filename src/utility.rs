@@ -83,8 +83,6 @@ pub fn size_are_compatible(a: &CscMatrix<f64>, vector: &DVector<f64>, setting: &
 }
 
 pub fn compute_rel_err(solution: &DVector<f64>, x: &DVector<f64>) -> f64 {
-
     let diff = solution - x;
-    diff.norm()/solution.norm()
-
+    diff.norm() / solution.norm()
 }

@@ -44,31 +44,30 @@ pub fn exec(
             // TODO: definitive output
             let duration = start.elapsed().as_millis();
             let statistics = Stat::new(x, duration, count as u32);
-            return statistics
+            return statistics;
         }
 
         // compute update
         match method {
             Method::JA => {
                 let update = get_jacobi_update(&p.as_ref().unwrap(), &residue);
-                x += update;
+                x.axpy(1.0, &update, 1.0);
                 residue = utility::compute_residue(a, &x, b, size);
             }
             Method::GS => {
                 let update = get_gs_update(&p.as_ref().unwrap(), &residue);
-                x += update;
+                x.axpy(1.0, &update, 1.0);
                 residue = utility::compute_residue(a, &x, b, size);
             }
             Method::GR => {
                 let alpha = gradient_solve::get_alpha_k(a, &residue);
-                x += alpha * &residue;
+                x.axpy(alpha, &residue, 1.0);
                 residue = utility::compute_residue(a, &x, b, size);
             }
             Method::CG => {
                 // compute alpha and update x
                 let alpha = cg_solve::compute_alpha(&d, &residue, a);
                 x.axpy(alpha, &d, 1.0);
-                
 
                 // compute residue with updated x
                 residue = utility::compute_residue(a, &x, b, size);
@@ -76,11 +75,10 @@ pub fn exec(
                 // compute beta and update d
                 let beta = cg_solve::compute_beta(&d, &residue, a);
                 d.axpy(1.0, &residue, -beta);
-                
             }
         };
 
         count += 1;
     }
-        panic!("Method didn't converged");
+    panic!("Method didn't converged");
 }

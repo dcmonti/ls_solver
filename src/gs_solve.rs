@@ -5,8 +5,7 @@ use nalgebra_sparse::{
 };
 
 pub fn get_gs_p(a: &CscMatrix<f64>, omega: f64) -> CscMatrix<f64> {
-    let lt = a.lower_triangle();
-    lt * omega
+    a.lower_triangle() / omega
 }
 
 pub fn get_gs_update(p_lt: &CscMatrix<f64>, residue: &DVector<f64>) -> DVector<f64> {
