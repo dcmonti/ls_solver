@@ -31,8 +31,9 @@ pub fn exec(
     let mut x = DVector::from_element(size, 0.0);
     let mut residue = utility::compute_residue(a, &x, b, size);
     let mut d = match method {
-        Method::CG => Some(utility::compute_residue(a, &x, b, size)),
-        _ => None,
+        // d only used for cg
+        Method::CG => utility::compute_residue(a, &x, b, size),
+        _ => DVector::from(vec![0.0]),
     };
 
     let mut count = 0;
@@ -68,15 +69,18 @@ pub fn exec(
             }
             Method::CG => {
                 // compute alpha and update x
-                let alpha = cg_solve::compute_alpha(&d.as_ref().unwrap(), &residue, a);
-                x += alpha * d.as_ref().unwrap();
+                let alpha = cg_solve::compute_alpha(&d, &residue, a);
+                x.axpy(alpha, &d, 1.0);
+                
 
                 // compute residue with updated x
                 residue = utility::compute_residue(a, &x, b, size);
 
                 // compute beta and update d
-                let beta = cg_solve::compute_beta(&d.as_ref().unwrap(), &residue, a);
-                d = Some(&residue - beta * d.as_ref().unwrap());
+                let beta = cg_solve::compute_beta(&d, &residue, a);
+                d = residue - beta * d;
+                //d = Some(&residue - beta * d.as_ref().unwrap());
+                
             }
         };
 
