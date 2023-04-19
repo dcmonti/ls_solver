@@ -6,21 +6,21 @@ use nalgebra_sparse::{
 
 #[derive(Debug)]
 pub struct Stat {
-    solution: Vec<f64>,
+    solution: DVector<f64>,
     time: u128,
     iter: u32,
 }
 
 impl Stat {
-    pub fn new(solution: Vec<f64>, time: u128, iter: u32) -> Stat {
+    pub fn new(solution: DVector<f64>, time: u128, iter: u32) -> Stat {
         Stat {
             solution,
             time,
             iter,
         }
     }
-    pub fn get_solution(&self) -> &Vec<f64> {
-        self.solution.as_ref()
+    pub fn get_solution(&self) -> &DVector<f64> {
+        &self.solution
     }
 
     pub fn get_time(&self) -> u128 {
@@ -80,4 +80,11 @@ pub fn size_are_compatible(a: &CscMatrix<f64>, vector: &DVector<f64>, setting: &
         }
         _ => {}
     }
+}
+
+pub fn compute_rel_err(solution: &DVector<f64>, x: &DVector<f64>) -> f64 {
+
+    let diff = solution - x;
+    diff.norm()/solution.norm()
+
 }

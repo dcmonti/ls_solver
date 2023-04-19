@@ -17,7 +17,7 @@ pub fn exec(
     tol: f64,
     max_iter: i32,
     omega: f64,
-) {
+) -> Stat {
     let start = Instant::now();
     let size = a.ncols();
     let b_norm = b.norm();
@@ -37,18 +37,14 @@ pub fn exec(
     };
 
     let mut count = 0;
-    let mut tol_reached = false;
 
     while count < max_iter {
         let residue_norm = residue.norm();
         if utility::tolerance_reached(tol, residue_norm, b_norm) {
             // TODO: definitive output
             let duration = start.elapsed().as_millis();
-            let sol: Vec<f64> = x.into_iter().map(|val| *val).collect();
-            let statistics = Stat::new(sol, duration, count as u32);
-            println!("{}", statistics.to_string());
-            tol_reached = true;
-            break;
+            let statistics = Stat::new(x, duration, count as u32);
+            return statistics
         }
 
         // compute update
@@ -86,7 +82,5 @@ pub fn exec(
 
         count += 1;
     }
-    if !tol_reached {
-        panic!("Method didn't converged")
-    }
+        panic!("Method didn't converged");
 }
