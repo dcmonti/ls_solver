@@ -51,6 +51,7 @@ pub fn exec(
             break;
         }
 
+        // compute update
         match method {
             Method::JA => {
                 let update = get_jacobi_update(&p.as_ref().unwrap(), &residue);
@@ -78,8 +79,7 @@ pub fn exec(
 
                 // compute beta and update d
                 let beta = cg_solve::compute_beta(&d, &residue, a);
-                d = residue - beta * d;
-                //d = Some(&residue - beta * d.as_ref().unwrap());
+                d.axpy(1.0, &residue, -beta);
                 
             }
         };

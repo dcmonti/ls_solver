@@ -1,4 +1,6 @@
 /target
 /matrici
+/dati
 *.sh
 *.txt
+*.pdf
