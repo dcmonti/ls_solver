@@ -40,7 +40,7 @@ pub fn vem1_benchmark(c: &mut Criterion) {
         });
         group.bench_with_input(BenchmarkId::new("10", met_to_str(&met)), &met, |b, met| {
             b.iter(|| {
-                solve_linear_system(&matr, &matr_b, met.copy(), 10.0_f64.powi(-8), 20000, 1.0)
+                solve_linear_system(&matr, &matr_b, met.copy(), 10.0_f64.powi(-10), 20000, 1.0)
             })
         });
     }
@@ -77,7 +77,7 @@ pub fn vem2_benchmark(c: &mut Criterion) {
         });
         group.bench_with_input(BenchmarkId::new("10", met_to_str(&met)), &met, |b, met| {
             b.iter(|| {
-                solve_linear_system(&matr, &matr_b, met.copy(), 10.0_f64.powi(-8), 20000, 1.0)
+                solve_linear_system(&matr, &matr_b, met.copy(), 10.0_f64.powi(-10), 20000, 1.0)
             })
         });
     }
@@ -114,7 +114,7 @@ pub fn spa1_benchmark(c: &mut Criterion) {
         });
         group.bench_with_input(BenchmarkId::new("10", met_to_str(&met)), &met, |b, met| {
             b.iter(|| {
-                solve_linear_system(&matr, &matr_b, met.copy(), 10.0_f64.powi(-8), 20000, 1.0)
+                solve_linear_system(&matr, &matr_b, met.copy(), 10.0_f64.powi(-10), 20000, 1.0)
             })
         });
     }
@@ -151,7 +151,34 @@ pub fn spa2_benchmark(c: &mut Criterion) {
         });
         group.bench_with_input(BenchmarkId::new("10", met_to_str(&met)), &met, |b, met| {
             b.iter(|| {
-                solve_linear_system(&matr, &matr_b, met.copy(), 10.0_f64.powi(-8), 20000, 1.0)
+                solve_linear_system(&matr, &matr_b, met.copy(), 10.0_f64.powi(-10), 20000, 1.0)
+            })
+        });
+    }
+}
+
+fn precond_vs_gradient(c: &mut Criterion) {
+    let spa1: CscMatrix<f64> = CscMatrix::from(
+        &load_coo_from_matrix_market_file("benches/test_matrices/spa1.mtx").unwrap(),
+    );
+
+    let spa1_solution = DVector::from_element(matr.nrows(), 1.0);
+
+    let spa1_b = init_b(&matr_solution, &matr);
+
+    let mut group = c.benchmark_group("p_gra-gra(spa1)");
+    group.sampling_mode(SamplingMode::Flat);
+    group.measurement_time(Duration::from_secs(100));
+
+    for met in [Method::GR, Method::PG] {
+        group.bench_with_input(BenchmarkId::new("8", met_to_str(&met)), &met, |b, met| {
+            b.iter(|| {
+                solve_linear_system(&spa1, &spa1_b, met.copy(), 10.0_f64.powi(-8), 20000, 1.0)
+            })
+        });
+        group.bench_with_input(BenchmarkId::new("10", met_to_str(&met)), &met, |b, met| {
+            b.iter(|| {
+                solve_linear_system(&spa1, &spa1_b, met.copy(), 10.0_f64.powi(-10), 20000, 1.0)
             })
         });
     }
@@ -163,6 +190,7 @@ pub fn met_to_str(met: &Method) -> String {
         Method::GS => String::from("gs"),
         Method::GR => String::from("gr"),
         Method::CG => String::from("cg"),
+        Method::PG => String::from("pg"),
     }
 }
 

@@ -12,6 +12,7 @@ pub enum Method {
     GS,
     GR,
     CG,
+    PG,
 }
 
 impl Method {
@@ -21,6 +22,7 @@ impl Method {
             Method::GS => Method::GS,
             Method::CG => Method::CG,
             Method::GR => Method::GR,
+            Method::PG => Method::PG,
         }
     }
 }

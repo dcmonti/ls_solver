@@ -1,5 +1,5 @@
 use ls_solver::{
-    io, preconditioned_gr, solver,
+    io, pgr_solve, solver,
     utility::{self, size_are_compatible, Setting},
 };
 use nalgebra::{self, DVector};
@@ -14,16 +14,6 @@ fn main() {
     let max_iter = io::get_max_iter();
     let omega = io::get_omega();
 
-    let solution = DVector::from_element(a.ncols(), 1.0);
-    let b = utility::init_b(&solution, &a);
-    let result = preconditioned_gr::exec(&a, &b, method, tol, max_iter, omega);
-    println!(
-        "Relative Error: {}\nIteration: {}\nTime: {} ms",
-        utility::compute_rel_err(&solution, result.get_solution()),
-        result.get_iterations(),
-        result.get_time()
-    );
-    /*
     match setting {
         Setting::Default => {
             let solution = DVector::from_element(a.ncols(), 1.0);
@@ -52,5 +42,4 @@ fn main() {
             println!("{}", result.to_string())
         }
     }
-    */
 }

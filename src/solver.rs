@@ -5,6 +5,7 @@ use crate::{
     cg_solve, gradient_solve,
     gs_solve::{get_gs_p, get_gs_update},
     jacobi_solve::{get_jacobi_p, get_jacobi_update},
+    pgr_solve,
     utility::{self, Stat},
 };
 use nalgebra::{self, DVector};
@@ -23,7 +24,7 @@ pub fn exec(
     let b_norm = b.norm();
 
     let p = match method {
-        Method::JA => Some(get_jacobi_p(a, omega)),
+        Method::JA | Method::PG => Some(get_jacobi_p(a, omega)),
         Method::GS => Some(get_gs_p(a, omega)),
         _ => None,
     };
@@ -75,6 +76,18 @@ pub fn exec(
                 // compute beta and update d
                 let beta = cg_solve::compute_beta(&d, &residue, a);
                 d.axpy(1.0, &residue, -beta);
+            }
+            Method::PG => {
+                // compute  z update
+                let mut z = DVector::from_element(size, 0.0);
+                pgr_solve::compute_z(&mut z, p.as_ref().unwrap(), &residue);
+
+                // compute alpha and x update
+                let alpha = pgr_solve::get_precond_alpha_k(a, &residue, &z);
+                x.axpy(alpha, &z, 1.0);
+
+                // compute residue update
+                pgr_solve::compute_precond_residue(&mut residue, a, &z, alpha);
             }
         };
 

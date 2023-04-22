@@ -34,7 +34,7 @@ struct Args {
         short = 'm',
         long = "method",
         default_value_t = 0,
-        help = "0: Jacobi\n1: Gauß-Seidel\n2: gradient\n3: conjugate gradient"
+        help = "0: Jacobi\n1: Gauß-Seidel\n2: gradient\n3: conjugate gradient\n4: Jacobi-preconditioned gradient (only if matrix is SPD)"
     )]
     method: i32,
 
@@ -136,6 +136,7 @@ pub fn get_method() -> Method {
         1 => Method::GS,
         2 => Method::GR,
         3 => Method::CG,
+        4 => Method::PG,
         _ => panic!("Value must be between 0 and 3, try --help for more information"),
     }
 }
