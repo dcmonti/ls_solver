@@ -15,7 +15,7 @@ pub enum Method {
 }
 
 impl Method {
-    pub fn copy(&self) -> Method{
+    pub fn copy(&self) -> Method {
         match self {
             Method::JA => Method::JA,
             Method::GS => Method::GS,

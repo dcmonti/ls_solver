@@ -4,5 +4,6 @@ pub mod gradient_solve;
 pub mod gs_solve;
 pub mod io;
 pub mod jacobi_solve;
+pub mod preconditioned_gr;
 pub mod solver;
 pub mod utility;
