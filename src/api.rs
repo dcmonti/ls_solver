@@ -13,6 +13,17 @@ pub enum Method {
     GR,
     CG,
 }
+
+impl Method {
+    pub fn copy(&self) -> Method{
+        match self {
+            Method::JA => Method::JA,
+            Method::GS => Method::GS,
+            Method::CG => Method::CG,
+            Method::GR => Method::GR,
+        }
+    }
+}
 pub struct Performance {
     pub rel_err: f64,
     pub time: u128,
