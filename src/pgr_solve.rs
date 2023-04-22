@@ -2,9 +2,8 @@ use std::time::Instant;
 
 use crate::{
     api::Method,
-    cg_solve, gradient_solve,
-    gs_solve::{get_gs_p, get_gs_update},
-    jacobi_solve::{get_jacobi_p, get_jacobi_update},
+    gs_solve::{get_gs_p},
+    jacobi_solve::{get_jacobi_p},
     utility::{self, Stat},
 };
 use nalgebra::{self, DVector};
@@ -25,7 +24,7 @@ pub fn exec(
     let size = a.ncols();
     let b_norm = b.norm();
 
-    let p = match method {
+    let _p = match method {
         Method::JA => Some(get_jacobi_p(a, omega)),
         Method::GS => Some(get_gs_p(a, omega)),
         _ => None,

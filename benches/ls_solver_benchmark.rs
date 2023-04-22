@@ -1,9 +1,8 @@
 use std::time::Duration;
 
-use criterion::{black_box, criterion_group, criterion_main, BenchmarkId, Criterion, SamplingMode};
+use criterion::{criterion_group, criterion_main, BenchmarkId, Criterion, SamplingMode};
 use ls_solver::{
     api::{solve_linear_system, Method},
-    io::read_matrix,
     utility::init_b,
 };
 use nalgebra::DVector;
@@ -162,9 +161,9 @@ fn precond_vs_gradient(c: &mut Criterion) {
         &load_coo_from_matrix_market_file("benches/test_matrices/spa1.mtx").unwrap(),
     );
 
-    let spa1_solution = DVector::from_element(matr.nrows(), 1.0);
+    let spa1_solution = DVector::from_element(spa1.nrows(), 1.0);
 
-    let spa1_b = init_b(&matr_solution, &matr);
+    let spa1_b = init_b(&spa1_solution, &spa1);
 
     let mut group = c.benchmark_group("p_gra-gra(spa1)");
     group.sampling_mode(SamplingMode::Flat);

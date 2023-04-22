@@ -1,5 +1,5 @@
 use ls_solver::{
-    io, pgr_solve, solver,
+    io, solver,
     utility::{self, size_are_compatible, Setting},
 };
 use nalgebra::{self, DVector};
