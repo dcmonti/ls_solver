@@ -63,13 +63,13 @@ pub fn compute_residue(
     x: &DVector<f64>,
     b: &DVector<f64>,
     size: usize,
-) -> DVector<f64> {
-    let mut residue = DVector::from_element(size, 0.0);
-    spmm_csc_dense(1.0, &mut residue, 1.0, Op::NoOp(a), Op::NoOp(x));
+    residue: &mut DVector<f64>,
+) {
+    let mut b_a_x = DVector::from_element(size, 0.0);
+    spmm_csc_dense(1.0, &mut b_a_x, 1.0, Op::NoOp(a), Op::NoOp(x));
 
-    let mut residue_update = DVector::from_element(size, 0.0);
-    b.sub_to(&residue, &mut residue_update);
-    residue_update
+    b_a_x.axpy(1.0, b, -1.0);
+    residue.axpy(1.0, &b_a_x, 0_f64);
 }
 
 pub fn size_are_compatible(a: &CscMatrix<f64>, vector: &DVector<f64>, setting: &Setting) {

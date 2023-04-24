@@ -3,7 +3,7 @@ use nalgebra_sparse::{io::load_coo_from_matrix_market_file, CscMatrix};
 
 use crate::{
     solver,
-    utility::{compute_rel_err, init_b, Stat},
+    utility::{compute_rel_err, Stat},
 };
 
 #[derive(Debug)]
@@ -47,6 +47,9 @@ pub fn solve_linear_system(
     solver::exec(&a, &b, method, tol, max_iter, omega)
 }
 
+pub fn init_solution(size: usize) -> DVector<f64> {
+    DVector::from_element(size, 1.0)
+}
 pub fn compute_performance(
     a: &CscMatrix<f64>,
     solution: &DVector<f64>,
@@ -55,7 +58,7 @@ pub fn compute_performance(
     max_iter: i32,
     omega: f64,
 ) -> Performance {
-    let b = init_b(solution, a);
+    let b = utility::init_b(solution, a);
     let result = solver::exec(&a, &b, method, tol, max_iter, omega);
     let rel_err = compute_rel_err(solution, result.get_solution());
     Performance {

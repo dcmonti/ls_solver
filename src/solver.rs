@@ -2,10 +2,7 @@ use std::time::Instant;
 
 use crate::{
     api::Method,
-    cg_solve, gradient_solve,
-    gs_solve::{get_gs_p, get_gs_update},
-    jacobi_solve::{get_jacobi_p, get_jacobi_update},
-    pgr_solve,
+    cg_solve, gradient_solve, gs_solve, jacobi_solve, pgr_solve,
     utility::{self, Stat},
 };
 use nalgebra::{self, DVector};
@@ -24,16 +21,22 @@ pub fn exec(
     let b_norm = b.norm();
 
     let p = match method {
-        Method::JA | Method::PG => Some(get_jacobi_p(a, omega)),
-        Method::GS => Some(get_gs_p(a, omega)),
+        Method::JA | Method::PG => Some(jacobi_solve::get_jacobi_p(a, omega)),
+        Method::GS => Some(gs_solve::get_gs_p(a, omega)),
         _ => None,
     };
 
     let mut x = DVector::from_element(size, 0.0);
-    let mut residue = utility::compute_residue(a, &x, b, size);
+    let mut residue = DVector::from_element(size, 0.0);
+    utility::compute_residue(a, &x, b, size, &mut residue);
+
     let mut d = match method {
         // d only used for cg
-        Method::CG => utility::compute_residue(a, &x, b, size),
+        Method::CG => {
+            let mut tmp_d = DVector::from_element(size, 0.0);
+            utility::compute_residue(a, &x, b, size, &mut tmp_d);
+            tmp_d
+        },
         _ => DVector::from(vec![0.0]),
     };
 
@@ -42,28 +45,24 @@ pub fn exec(
     while count < max_iter {
         let residue_norm = residue.norm();
         if utility::tolerance_reached(tol, residue_norm, b_norm) {
-            // TODO: definitive output
             let duration = start.elapsed().as_millis();
             let statistics = Stat::new(x, duration, count as u32);
             return statistics;
         }
-
+        // TODO: change update method, using only reference if possible (ALSO FOR RESIDUE)
         // compute update
         match method {
             Method::JA => {
-                let update = get_jacobi_update(&p.as_ref().unwrap(), &residue);
-                x.axpy(1.0, &update, 1.0);
-                residue = utility::compute_residue(a, &x, b, size);
+                jacobi_solve::compute_jacobi_update(&mut x, &p.as_ref().unwrap(), &residue);
+                utility::compute_residue(a, &x, b, size, &mut residue);
             }
             Method::GS => {
-                let update = get_gs_update(&p.as_ref().unwrap(), &residue);
-                x.axpy(1.0, &update, 1.0);
-                residue = utility::compute_residue(a, &x, b, size);
+                gs_solve::compute_gs_update(&mut x, &p.as_ref().unwrap(), &residue);
+                utility::compute_residue(a, &x, b, size, &mut residue);
             }
             Method::GR => {
-                let alpha = gradient_solve::get_alpha_k(a, &residue);
-                x.axpy(alpha, &residue, 1.0);
-                residue = utility::compute_residue(a, &x, b, size);
+                gradient_solve::compute_gr_update(a, &residue, &mut x);
+                utility::compute_residue(a, &x, b, size, &mut residue);
             }
             Method::CG => {
                 // compute alpha and update x
@@ -71,7 +70,7 @@ pub fn exec(
                 x.axpy(alpha, &d, 1.0);
 
                 // compute residue with updated x
-                residue = utility::compute_residue(a, &x, b, size);
+                utility::compute_residue(a, &x, b, size, &mut residue);
 
                 // compute beta and update d
                 let beta = cg_solve::compute_beta(&d, &residue, a);

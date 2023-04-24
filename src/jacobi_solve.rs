@@ -15,8 +15,8 @@ pub fn get_jacobi_p(a: &CscMatrix<f64>, omega: f64) -> CscMatrix<f64> {
 }
 
 #[inline]
-pub fn get_jacobi_update(p: &CscMatrix<f64>, residue: &DVector<f64>) -> DVector<f64> {
+pub fn compute_jacobi_update(x: &mut DVector<f64>, p: &CscMatrix<f64>, residue: &DVector<f64>) {
     let mut update = DVector::from_element(p.nrows(), 0.0);
     spmm_csc_dense(1.0, &mut update, 1.0, Op::NoOp(p), Op::NoOp(residue));
-    update
+    x.axpy(1.0, &update, 1.0);
 }

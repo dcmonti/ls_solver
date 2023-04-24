@@ -131,7 +131,6 @@ pub fn spa2_benchmark(c: &mut Criterion) {
     let mut group = c.benchmark_group("spa2");
     group.sampling_mode(SamplingMode::Flat);
     group.measurement_time(Duration::from_secs(100));
-
     for met in [Method::JA, Method::GS, Method::GR, Method::CG] {
         group.bench_with_input(BenchmarkId::new("4", met_to_str(&met)), &met, |b, met| {
             b.iter(|| {
@@ -198,6 +197,7 @@ criterion_group!(
     vem1_benchmark,
     vem2_benchmark,
     spa1_benchmark,
-    spa2_benchmark
+    spa2_benchmark,
+    precond_vs_gradient
 );
 criterion_main!(benches);
