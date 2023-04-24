@@ -3,7 +3,7 @@ use nalgebra_sparse::{io::load_coo_from_matrix_market_file, CscMatrix};
 
 use crate::{
     solver,
-    utility::{compute_rel_err, Stat},
+    utility::{compute_rel_err, Stat, self, init_b},
 };
 
 #[derive(Debug)]
@@ -58,7 +58,7 @@ pub fn compute_performance(
     max_iter: i32,
     omega: f64,
 ) -> Performance {
-    let b = utility::init_b(solution, a);
+    let b = init_b(solution, a);
     let result = solver::exec(&a, &b, method, tol, max_iter, omega);
     let rel_err = compute_rel_err(solution, result.get_solution());
     Performance {
