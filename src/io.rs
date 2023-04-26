@@ -4,7 +4,7 @@ use crate::{api::Method, utility::Setting};
 use clap::Parser;
 use nalgebra::DVector;
 use nalgebra_sparse as nasp;
-use nasp::{CooMatrix, CscMatrix};
+use nasp::{CooMatrix, CsrMatrix};
 
 #[derive(Parser, Debug)]
 #[clap(
@@ -89,10 +89,10 @@ fn get_vector_path() -> String {
     args.vector_path
 }
 
-pub fn read_matrix() -> CscMatrix<f64> {
+pub fn read_matrix() -> CsrMatrix<f64> {
     let file_path = get_matrix_path();
     let sparse_matrix = nasp::io::load_coo_from_matrix_market_file(file_path).unwrap();
-    let csc_matrix = CscMatrix::from(&sparse_matrix);
+    let csc_matrix = CsrMatrix::from(&sparse_matrix);
     csc_matrix
 }
 pub fn read_vector() -> (DVector<f64>, Setting) {

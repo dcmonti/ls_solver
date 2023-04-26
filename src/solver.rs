@@ -6,10 +6,10 @@ use crate::{
     utility::{self, Stat},
 };
 use nalgebra::{self, DVector};
-use nalgebra_sparse::CscMatrix;
+use nalgebra_sparse::CsrMatrix;
 
 pub fn exec(
-    a: &CscMatrix<f64>,
+    a: &CsrMatrix<f64>,
     b: &DVector<f64>,
     method: Method,
     tol: f64,
@@ -22,8 +22,12 @@ pub fn exec(
 
     let p = match method {
         Method::JA | Method::PG => Some(jacobi_solve::get_jacobi_p(a, omega)),
-        Method::GS => Some(gs_solve::get_gs_p(a, omega)),
         _ => None,
+    };
+
+    let p_gs = match method {
+        Method::GS => Some(gs_solve::get_gs_p(a, omega)),
+        _ => None
     };
 
     let mut x = DVector::from_element(size, 0.0);
@@ -58,7 +62,7 @@ pub fn exec(
                 utility::compute_residue(a, &x, b, size, &mut residue);
             }
             Method::GS => {
-                gs_solve::compute_gs_update(&mut x, &p.as_ref().unwrap(), &residue);
+                gs_solve::compute_gs_update(&mut x, &p_gs.as_ref().unwrap(), &residue);
                 utility::compute_residue(a, &x, b, size, &mut residue);
             }
             Method::GR => {

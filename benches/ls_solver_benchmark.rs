@@ -6,10 +6,10 @@ use ls_solver::{
     utility::init_b,
 };
 use nalgebra::DVector;
-use nalgebra_sparse::{io::load_coo_from_matrix_market_file, CscMatrix};
+use nalgebra_sparse::{io::load_coo_from_matrix_market_file, CsrMatrix};
 
 pub fn vem1_benchmark(c: &mut Criterion) {
-    let matr: CscMatrix<f64> = CscMatrix::from(
+    let matr: CsrMatrix<f64> = CsrMatrix::from(
         &load_coo_from_matrix_market_file("benches/test_matrices/vem1.mtx").unwrap(),
     );
 
@@ -46,7 +46,7 @@ pub fn vem1_benchmark(c: &mut Criterion) {
 }
 
 pub fn vem2_benchmark(c: &mut Criterion) {
-    let matr: CscMatrix<f64> = CscMatrix::from(
+    let matr: CsrMatrix<f64> = CsrMatrix::from(
         &load_coo_from_matrix_market_file("benches/test_matrices/vem2.mtx").unwrap(),
     );
 
@@ -83,7 +83,7 @@ pub fn vem2_benchmark(c: &mut Criterion) {
 }
 
 pub fn spa1_benchmark(c: &mut Criterion) {
-    let matr: CscMatrix<f64> = CscMatrix::from(
+    let matr: CsrMatrix<f64> = CsrMatrix::from(
         &load_coo_from_matrix_market_file("benches/test_matrices/spa1.mtx").unwrap(),
     );
 
@@ -120,7 +120,7 @@ pub fn spa1_benchmark(c: &mut Criterion) {
 }
 
 pub fn spa2_benchmark(c: &mut Criterion) {
-    let matr: CscMatrix<f64> = CscMatrix::from(
+    let matr: CsrMatrix<f64> = CsrMatrix::from(
         &load_coo_from_matrix_market_file("benches/test_matrices/spa2.mtx").unwrap(),
     );
 
@@ -156,7 +156,7 @@ pub fn spa2_benchmark(c: &mut Criterion) {
 }
 
 fn precond_vs_gradient(c: &mut Criterion) {
-    let spa1: CscMatrix<f64> = CscMatrix::from(
+    let spa1: CsrMatrix<f64> = CsrMatrix::from(
         &load_coo_from_matrix_market_file("benches/test_matrices/spa1.mtx").unwrap(),
     );
 

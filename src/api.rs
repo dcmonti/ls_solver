@@ -1,9 +1,9 @@
 use nalgebra::DVector;
-use nalgebra_sparse::{io::load_coo_from_matrix_market_file, CscMatrix};
+use nalgebra_sparse::{io::load_coo_from_matrix_market_file, CsrMatrix};
 
 use crate::{
     solver,
-    utility::{compute_rel_err, Stat, self, init_b},
+    utility::{compute_rel_err, Stat, init_b},
 };
 
 #[derive(Debug)]
@@ -32,12 +32,12 @@ pub struct Performance {
     pub iter: u32,
 }
 
-pub fn read_matrix_from_matrix_market_file(file_path: &String) -> CscMatrix<f64> {
+pub fn read_matrix_from_matrix_market_file(file_path: &String) -> CsrMatrix<f64> {
     let coo_matrix = load_coo_from_matrix_market_file(file_path).unwrap();
-    CscMatrix::from(&coo_matrix)
+    CsrMatrix::from(&coo_matrix)
 }
 pub fn solve_linear_system(
-    a: &CscMatrix<f64>,
+    a: &CsrMatrix<f64>,
     b: &DVector<f64>,
     method: Method,
     tol: f64,
@@ -51,7 +51,7 @@ pub fn init_solution(size: usize) -> DVector<f64> {
     DVector::from_element(size, 1.0)
 }
 pub fn compute_performance(
-    a: &CscMatrix<f64>,
+    a: &CsrMatrix<f64>,
     solution: &DVector<f64>,
     method: Method,
     tol: f64,
