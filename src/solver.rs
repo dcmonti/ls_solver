@@ -37,6 +37,7 @@ pub fn exec(
             utility::compute_residue(a, &x, b, size, &mut tmp_d);
             tmp_d
         },
+        Method::GR => DVector::from_element(size, 0.0),
         _ => DVector::from(vec![0.0]),
     };
 
@@ -61,7 +62,7 @@ pub fn exec(
                 utility::compute_residue(a, &x, b, size, &mut residue);
             }
             Method::GR => {
-                gradient_solve::compute_gr_update(a, &residue, &mut x);
+                gradient_solve::compute_gr_update(a, &residue, &mut x,&mut d);
                 utility::compute_residue(a, &x, b, size, &mut residue);
             }
             Method::CG => {
