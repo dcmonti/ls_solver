@@ -95,7 +95,7 @@ pub fn spa1_benchmark(c: &mut Criterion) {
     group.sampling_mode(SamplingMode::Flat);
     group.measurement_time(Duration::from_secs(100));
 
-    for met in [Method::JA, Method::GS, Method::GR, Method::CG] {
+    for met in [Method::JA, Method::GS, Method::PG, Method::CG] {
         group.bench_with_input(BenchmarkId::new("4", met_to_str(&met)), &met, |b, met| {
             b.iter(|| {
                 solve_linear_system(&matr, &matr_b, met.copy(), 10.0_f64.powi(-4), 20000, 1.0)
@@ -131,7 +131,7 @@ pub fn spa2_benchmark(c: &mut Criterion) {
     let mut group = c.benchmark_group("spa2");
     group.sampling_mode(SamplingMode::Flat);
     group.measurement_time(Duration::from_secs(100));
-    for met in [Method::JA, Method::GS, Method::GR, Method::CG] {
+    for met in [Method::JA, Method::GS, Method::PG, Method::CG] {
         group.bench_with_input(BenchmarkId::new("4", met_to_str(&met)), &met, |b, met| {
             b.iter(|| {
                 solve_linear_system(&matr, &matr_b, met.copy(), 10.0_f64.powi(-4), 20000, 1.0)
@@ -194,10 +194,9 @@ pub fn met_to_str(met: &Method) -> String {
 
 criterion_group!(
     benches,
-    vem1_benchmark,
-    vem2_benchmark,
+    
     spa1_benchmark,
     spa2_benchmark,
-    precond_vs_gradient
+  
 );
 criterion_main!(benches);
