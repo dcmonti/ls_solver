@@ -1,8 +1,9 @@
 use core::panic;
+use std::{fs::File, io::{BufReader, BufRead}};
 
 use crate::{api::Method, utility::Setting};
 use clap::Parser;
-use nalgebra::DVector;
+use nalgebra::{DVector, Vector};
 use nalgebra_sparse as nasp;
 use nasp::{CooMatrix, CsrMatrix};
 
@@ -103,7 +104,28 @@ pub fn read_vector() -> (DVector<f64>, Setting) {
         (parse_vector(&file_path), get_setting())
     }
 }
-fn parse_vector(file_path: &String) -> DVector<f64> {
+
+pub fn parse_vector(file_path: &String) -> DVector<f64> {
+    let extension = file_path[file_path.len() - 3..].to_string();
+    if extension.eq(&String::from("mtx")) {
+        parse_mtx_vector(file_path)
+    } else {
+        parse_standard_vector(file_path)
+    }
+}
+
+fn parse_standard_vector(file_path: &String) -> DVector<f64> {
+    let file = File::open(file_path).unwrap();
+    let lines = BufReader::new(file).lines();
+
+    let mut vector = Vec::new();
+    for line in lines {
+        let f = line.unwrap().trim().parse::<f64>().unwrap();
+        vector.push(f)
+    }
+    DVector::from(vector)
+}
+fn parse_mtx_vector(file_path: &String) -> DVector<f64> {
     let coo_matrix: CooMatrix<f64> = nasp::io::load_coo_from_matrix_market_file(file_path).unwrap();
 
     let vector = match (coo_matrix.ncols(), coo_matrix.nrows()) {

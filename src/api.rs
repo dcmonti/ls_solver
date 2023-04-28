@@ -1,9 +1,9 @@
-use nalgebra::DVector;
+use nalgebra::{DVector, Const};
 use nalgebra_sparse::{io::load_coo_from_matrix_market_file, CsrMatrix};
 
 use crate::{
     solver,
-    utility::{compute_rel_err, Stat, init_b},
+    utility::{compute_rel_err, Stat, init_b}, io,
 };
 
 #[derive(Debug)]
@@ -36,6 +36,17 @@ pub fn read_matrix_from_matrix_market_file(file_path: &String) -> CsrMatrix<f64>
     let coo_matrix = load_coo_from_matrix_market_file(file_path).unwrap();
     CsrMatrix::from(&coo_matrix)
 }
+
+pub fn read_vector_from_file(file_path: &String) -> DVector<f64> {
+    io::parse_vector(file_path)
+}
+pub fn init_solution(size: usize, value: f64) -> DVector<f64> {
+    DVector::from_element(size, value)
+}
+pub fn init_random_vector(size: usize) -> DVector<f64> {
+
+    DVector::new_random_generic(nalgebra::Dyn(size), Const::<1>)
+}
 pub fn solve_linear_system(
     a: &CsrMatrix<f64>,
     b: &DVector<f64>,
@@ -47,9 +58,6 @@ pub fn solve_linear_system(
     solver::exec(&a, &b, method, tol, max_iter, omega)
 }
 
-pub fn init_solution(size: usize) -> DVector<f64> {
-    DVector::from_element(size, 1.0)
-}
 pub fn compute_performance(
     a: &CsrMatrix<f64>,
     solution: &DVector<f64>,
