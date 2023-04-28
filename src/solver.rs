@@ -20,6 +20,7 @@ pub fn exec(
     let size = a.ncols();
     let b_norm = b.norm();
 
+    //init data structure
     let p = match method {
         Method::JA | Method::PG => Some(jacobi_solve::get_jacobi_p(a, omega)),
         _ => None,
@@ -32,16 +33,20 @@ pub fn exec(
 
     let mut x = DVector::from_element(size, 0.0);
     let mut residue = DVector::from_element(size, 0.0);
-    utility::compute_residue(a, &x, b, size, &mut residue);
+    utility::compute_residue(a, &x, b, &mut residue);
 
     let mut d = match method {
-        // d only used for cg
         Method::CG => {
             let mut tmp_d = DVector::from_element(size, 0.0);
-            utility::compute_residue(a, &x, b, size, &mut tmp_d);
+            utility::compute_residue(a, &x, b, &mut tmp_d);
             tmp_d
         },
         Method::GR => DVector::from_element(size, 0.0),
+        _ => DVector::from(vec![0.0]),
+    };
+
+    let mut support = match method {
+        Method::JA | Method::CG =>     DVector::from_element(size, 0.0),
         _ => DVector::from(vec![0.0]),
     };
 
@@ -54,31 +59,30 @@ pub fn exec(
             let statistics = Stat::new(x, duration, count as u32);
             return statistics;
         }
-        // TODO: change update method, using only reference if possible (ALSO FOR RESIDUE)
         // compute update
         match method {
             Method::JA => {
-                jacobi_solve::compute_jacobi_update(&mut x, &p.as_ref().unwrap(), &residue);
-                utility::compute_residue(a, &x, b, size, &mut residue);
+                jacobi_solve::compute_jacobi_update(&mut x, &p.as_ref().unwrap(), &residue, &mut support);
+                utility::compute_residue(a, &x, b, &mut residue);
             }
             Method::GS => {
-                gs_solve::compute_gs_update(&mut x, &p_gs.as_ref().unwrap(), &residue);
-                utility::compute_residue(a, &x, b, size, &mut residue);
+                gs_solve::compute_gs_update(&mut x, &p_gs.as_ref().unwrap(), &mut residue);
+                utility::compute_residue(a, &x, b, &mut residue);
             }
             Method::GR => {
                 gradient_solve::compute_gr_update(a, &residue, &mut x,&mut d);
-                utility::compute_residue(a, &x, b, size, &mut residue);
+                utility::compute_residue(a, &x, b, &mut residue);
             }
             Method::CG => {
                 // compute alpha and update x
-                let alpha = cg_solve::compute_alpha(&d, &residue, a);
+                let alpha = cg_solve::compute_alpha(&d, &mut residue, a);
                 x.axpy(alpha, &d, 1.0);
 
                 // compute residue with updated x
-                utility::compute_residue(a, &x, b, size, &mut residue);
+                utility::compute_residue(a, &x, b, &mut residue);
 
                 // compute beta and update d
-                let beta = cg_solve::compute_beta(&d, &residue, a);
+                let beta = cg_solve::compute_beta(&d, &residue, a, &mut support);
                 d.axpy(1.0, &residue, -beta);
             }
             Method::PG => {

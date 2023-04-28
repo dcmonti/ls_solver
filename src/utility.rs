@@ -62,14 +62,11 @@ pub fn compute_residue(
     a: &CsrMatrix<f64>,
     x: &DVector<f64>,
     b: &DVector<f64>,
-    size: usize,
     residue: &mut DVector<f64>,
 ) {
-    let mut b_a_x = DVector::from_element(size, 0.0);
-    spmm_csr_dense(1.0, &mut b_a_x, 1.0, Op::NoOp(a), Op::NoOp(x));
+    spmm_csr_dense(0_f64, &mut *residue, 1.0, Op::NoOp(a), Op::NoOp(x));
+    residue.axpy(1.0, b, -1.0);
 
-    b_a_x.axpy(1.0, b, -1.0);
-    residue.axpy(1.0, &b_a_x, 0_f64);
 }
 
 pub fn size_are_compatible(a: &CsrMatrix<f64>, vector: &DVector<f64>, setting: &Setting) {

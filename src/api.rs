@@ -44,9 +44,9 @@ pub fn init_solution(size: usize, value: f64) -> DVector<f64> {
     DVector::from_element(size, value)
 }
 pub fn init_random_vector(size: usize) -> DVector<f64> {
-
     DVector::new_random_generic(nalgebra::Dyn(size), Const::<1>)
 }
+
 pub fn solve_linear_system(
     a: &CsrMatrix<f64>,
     b: &DVector<f64>,

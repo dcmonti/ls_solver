@@ -7,7 +7,7 @@ use nalgebra::{self, DVector};
 fn main() {
     let a = io::read_matrix();
     let (vector, setting) = io::read_vector();
-    println!("{:?}", &vector);
+    
     size_are_compatible(&a, &vector, &setting);
 
     let method = io::get_method();
