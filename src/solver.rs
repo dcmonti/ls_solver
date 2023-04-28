@@ -41,7 +41,7 @@ pub fn exec(
             utility::compute_residue(a, &x, b, &mut tmp_d);
             tmp_d
         },
-        Method::GR => DVector::from_element(size, 0.0),
+        Method::GR | Method::PG => DVector::from_element(size, 0.0),
         _ => DVector::from(vec![0.0]),
     };
 
@@ -62,11 +62,11 @@ pub fn exec(
         // compute update
         match method {
             Method::JA => {
-                jacobi_solve::compute_jacobi_update(&mut x, &p.as_ref().unwrap(), &residue, &mut support);
+                jacobi_solve::compute_jacobi_update(&mut x, p.as_ref().unwrap(), &residue, &mut support);
                 utility::compute_residue(a, &x, b, &mut residue);
             }
             Method::GS => {
-                gs_solve::compute_gs_update(&mut x, &p_gs.as_ref().unwrap(), &mut residue);
+                gs_solve::compute_gs_update(&mut x, p_gs.as_ref().unwrap(), &mut residue);
                 utility::compute_residue(a, &x, b, &mut residue);
             }
             Method::GR => {
@@ -87,15 +87,14 @@ pub fn exec(
             }
             Method::PG => {
                 // compute  z update
-                let mut z = DVector::from_element(size, 0.0);
-                pgr_solve::compute_z(&mut z, p.as_ref().unwrap(), &residue);
+                pgr_solve::compute_z(&mut d, p.as_ref().unwrap(), &residue);
 
                 // compute alpha and x update
-                let alpha = pgr_solve::get_precond_alpha_k(a, &residue, &z);
-                x.axpy(alpha, &z, 1.0);
+                let alpha = pgr_solve::get_precond_alpha_k(a, &residue, &d);
+                x.axpy(alpha, &d, 1.0);
 
                 // compute residue update
-                pgr_solve::compute_precond_residue(&mut residue, a, &z, alpha);
+                pgr_solve::compute_precond_residue(&mut residue, a, &d, alpha);
             }
         };
 

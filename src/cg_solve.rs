@@ -6,9 +6,9 @@ use nalgebra_sparse::{
 
 #[inline]
 pub fn compute_alpha(d: &DVector<f64>, residue: &mut DVector<f64>, a: &CsrMatrix<f64>) -> f64 {
-    let num = d.dot(&residue);
+    let num = d.dot(residue);
     spmm_csr_dense(0_f64, &mut *residue, 1.0, Op::NoOp(a), Op::NoOp(d));
-    let den = d.dot(&residue);
+    let den = d.dot(residue);
     num / den
 }
 

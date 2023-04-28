@@ -19,7 +19,7 @@ pub fn get_precond_alpha_k(a: &CsrMatrix<f64>, residue: &DVector<f64>, z: &DVect
 
 #[inline]
 pub fn compute_z(z: &mut DVector<f64>, p: &CsrMatrix<f64>, residue: &DVector<f64>) {
-    spmm_csr_dense(1.0, z, 1.0, Op::NoOp(p), Op::NoOp(residue));
+    spmm_csr_dense(0_f64, z, 1.0, Op::NoOp(p), Op::NoOp(residue));
 }
 #[inline]
 pub fn compute_precond_residue(residue: &mut DVector<f64>, a: &CsrMatrix<f64>, z: &DVector<f64>, alpha: f64) {

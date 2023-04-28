@@ -3,7 +3,7 @@ use std::{fs::File, io::{BufReader, BufRead}};
 
 use crate::{api::Method, utility::Setting};
 use clap::Parser;
-use nalgebra::{DVector, Vector};
+use nalgebra::DVector;
 use nalgebra_sparse as nasp;
 use nasp::{CooMatrix, CsrMatrix};
 
@@ -93,8 +93,8 @@ fn get_vector_path() -> String {
 pub fn read_matrix() -> CsrMatrix<f64> {
     let file_path = get_matrix_path();
     let sparse_matrix = nasp::io::load_coo_from_matrix_market_file(file_path).unwrap();
-    let csc_matrix = CsrMatrix::from(&sparse_matrix);
-    csc_matrix
+    
+    CsrMatrix::from(&sparse_matrix)
 }
 pub fn read_vector() -> (DVector<f64>, Setting) {
     let file_path = get_vector_path();
@@ -128,7 +128,9 @@ fn parse_standard_vector(file_path: &String) -> DVector<f64> {
 fn parse_mtx_vector(file_path: &String) -> DVector<f64> {
     let coo_matrix: CooMatrix<f64> = nasp::io::load_coo_from_matrix_market_file(file_path).unwrap();
 
-    let vector = match (coo_matrix.ncols(), coo_matrix.nrows()) {
+    
+
+    match (coo_matrix.ncols(), coo_matrix.nrows()) {
         (1, _) => {
             let mut tmp_vector = DVector::from_element(coo_matrix.nrows(), 0.0);
             for (row, _, val) in coo_matrix.triplet_iter() {
@@ -146,9 +148,7 @@ fn parse_mtx_vector(file_path: &String) -> DVector<f64> {
         _ => {
             panic!("Vector file wrong format")
         }
-    };
-
-    vector
+    }
 }
 
 pub fn get_method() -> Method {
@@ -177,7 +177,7 @@ pub fn get_max_iter() -> i32 {
 pub fn get_omega() -> f64 {
     let args = Args::parse();
     let mut omega = args.omega;
-    if omega < 0.0 || omega > 1.0 {
+    if !(0.0..=1.0).contains(&omega) {
         omega = 1.0
     }
     omega

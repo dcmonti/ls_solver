@@ -55,7 +55,7 @@ pub fn solve_linear_system(
     max_iter: i32,
     omega: f64,
 ) -> Stat {
-    solver::exec(&a, &b, method, tol, max_iter, omega)
+    solver::exec(a, b, method, tol, max_iter, omega)
 }
 
 pub fn compute_performance(
@@ -67,10 +67,10 @@ pub fn compute_performance(
     omega: f64,
 ) -> Performance {
     let b = init_b(solution, a);
-    let result = solver::exec(&a, &b, method, tol, max_iter, omega);
+    let result = solver::exec(a, &b, method, tol, max_iter, omega);
     let rel_err = compute_rel_err(solution, result.get_solution());
     Performance {
-        rel_err: rel_err,
+        rel_err,
         time: result.get_time(),
         iter: result.get_iterations(),
     }

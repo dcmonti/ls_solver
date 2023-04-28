@@ -17,5 +17,5 @@ pub fn get_jacobi_p(a: &CsrMatrix<f64>, omega: f64) -> CsrMatrix<f64> {
 #[inline]
 pub fn compute_jacobi_update(x: &mut DVector<f64>, p: &CsrMatrix<f64>, residue: &DVector<f64>, support: &mut DVector<f64>) {
     spmm_csr_dense(0_f64, &mut *support, 1.0, Op::NoOp(p), Op::NoOp(residue));
-    x.axpy(1.0, &support, 1.0);
+    x.axpy(1.0, support, 1.0);
 }

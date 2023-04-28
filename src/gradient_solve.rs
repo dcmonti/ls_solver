@@ -12,5 +12,5 @@ pub fn compute_gr_update(a: &CsrMatrix<f64>, residue: &DVector<f64>, x: &mut DVe
     let den = residue.dot(a_r);
 
     let alpha = num / den;
-    x.axpy(alpha, &residue, 1.0);
+    x.axpy(alpha, residue, 1.0);
 }   
