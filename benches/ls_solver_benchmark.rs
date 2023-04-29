@@ -167,8 +167,18 @@ fn precond_vs_gradient_spa1(c: &mut Criterion) {
     let mut group = c.benchmark_group("p_gra-gra(spa1)");
     group.sampling_mode(SamplingMode::Flat);
     group.measurement_time(Duration::from_secs(100));
-
+    group.warm_up_time(Duration::from_secs(100));
     for met in [Method::GR, Method::PG] {
+        group.bench_with_input(BenchmarkId::new("4", met_to_str(&met)), &met, |b, met| {
+            b.iter(|| {
+                solve_linear_system(&spa1, &spa1_b, met.copy(), 10.0_f64.powi(-4), 20000, 1.0)
+            })
+        });
+        group.bench_with_input(BenchmarkId::new("6", met_to_str(&met)), &met, |b, met| {
+            b.iter(|| {
+                solve_linear_system(&spa1, &spa1_b, met.copy(), 10.0_f64.powi(-6), 20000, 1.0)
+            })
+        });
         group.bench_with_input(BenchmarkId::new("8", met_to_str(&met)), &met, |b, met| {
             b.iter(|| {
                 solve_linear_system(&spa1, &spa1_b, met.copy(), 10.0_f64.powi(-8), 20000, 1.0)
@@ -191,11 +201,22 @@ fn precond_vs_gradient_spa2(c: &mut Criterion) {
 
     let spa1_b = init_b(&spa1_solution, &spa1);
 
-    let mut group = c.benchmark_group("p_gra-gra(spa1)");
+    let mut group = c.benchmark_group("p_gra-gra(spa2)");
     group.sampling_mode(SamplingMode::Flat);
     group.measurement_time(Duration::from_secs(100));
+    group.warm_up_time(Duration::from_secs(100));
 
     for met in [Method::GR, Method::PG] {
+        group.bench_with_input(BenchmarkId::new("4", met_to_str(&met)), &met, |b, met| {
+            b.iter(|| {
+                solve_linear_system(&spa1, &spa1_b, met.copy(), 10.0_f64.powi(-4), 20000, 1.0)
+            })
+        });
+        group.bench_with_input(BenchmarkId::new("6", met_to_str(&met)), &met, |b, met| {
+            b.iter(|| {
+                solve_linear_system(&spa1, &spa1_b, met.copy(), 10.0_f64.powi(-6), 20000, 1.0)
+            })
+        });
         group.bench_with_input(BenchmarkId::new("8", met_to_str(&met)), &met, |b, met| {
             b.iter(|| {
                 solve_linear_system(&spa1, &spa1_b, met.copy(), 10.0_f64.powi(-8), 20000, 1.0)
@@ -224,7 +245,7 @@ criterion_group!(
     vem1_benchmark,
     vem2_benchmark,
     spa1_benchmark,
-    spa2_benchmark,
+    spa2_benchmark, 
     precond_vs_gradient_spa1,
     precond_vs_gradient_spa2
 );
