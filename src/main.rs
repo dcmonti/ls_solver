@@ -7,7 +7,7 @@ use nalgebra::{self, DVector};
 fn main() {
     let a = io::read_matrix();
     let (vector, setting) = io::read_vector();
-    
+
     size_are_compatible(&a, &vector, &setting);
 
     let method = io::get_method();
@@ -25,7 +25,7 @@ fn main() {
                 utility::compute_rel_err(&solution, result.get_solution()),
                 result.get_iterations(),
                 result.get_time()
-            )
+            );
         }
         Setting::Precision => {
             // solution is vector
@@ -43,5 +43,4 @@ fn main() {
             println!("{}", result.to_string())
         }
     }
-    
 }

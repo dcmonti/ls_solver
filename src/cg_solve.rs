@@ -13,7 +13,12 @@ pub fn compute_alpha(d: &DVector<f64>, residue: &mut DVector<f64>, a: &CsrMatrix
 }
 
 #[inline]
-pub fn compute_beta(d: &DVector<f64>, residue: &DVector<f64>, a: &CsrMatrix<f64>, support: &mut DVector<f64>) -> f64 {
+pub fn compute_beta(
+    d: &DVector<f64>,
+    residue: &DVector<f64>,
+    a: &CsrMatrix<f64>,
+    support: &mut DVector<f64>,
+) -> f64 {
     spmm_csr_dense(0_f64, &mut *support, 1.0, Op::NoOp(a), Op::NoOp(residue));
     let num = d.dot(support);
 

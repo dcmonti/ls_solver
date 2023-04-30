@@ -28,7 +28,7 @@ pub fn exec(
 
     let p_gs = match method {
         Method::GS => Some(gs_solve::get_gs_p(a, omega)),
-        _ => None
+        _ => None,
     };
 
     let mut x = DVector::from_element(size, 0.0);
@@ -40,13 +40,14 @@ pub fn exec(
             let mut tmp_d = DVector::from_element(size, 0.0);
             utility::compute_residue(a, &x, b, &mut tmp_d);
             tmp_d
-        },
-        Method::GR | Method::PG => DVector::from_element(size, 0.0),
+        }
+        Method::PG => DVector::from_element(size, 0.0),
         _ => DVector::from(vec![0.0]),
     };
 
+    // init support vector to store intermediate result without allocating memory in loop
     let mut support = match method {
-        Method::JA | Method::CG =>     DVector::from_element(size, 0.0),
+        Method::JA | Method::CG | Method::GR => DVector::from_element(size, 0.0),
         _ => DVector::from(vec![0.0]),
     };
 
@@ -57,12 +58,19 @@ pub fn exec(
         if utility::tolerance_reached(tol, residue_norm, b_norm) {
             let duration = start.elapsed().as_millis();
             let statistics = Stat::new(x, duration, count as u32);
+
             return statistics;
         }
+
         // compute update
         match method {
             Method::JA => {
-                jacobi_solve::compute_jacobi_update(&mut x, p.as_ref().unwrap(), &residue, &mut support);
+                jacobi_solve::compute_jacobi_update(
+                    &mut x,
+                    p.as_ref().unwrap(),
+                    &residue,
+                    &mut support,
+                );
                 utility::compute_residue(a, &x, b, &mut residue);
             }
             Method::GS => {
@@ -70,7 +78,7 @@ pub fn exec(
                 utility::compute_residue(a, &x, b, &mut residue);
             }
             Method::GR => {
-                gradient_solve::compute_gr_update(a, &residue, &mut x,&mut d);
+                gradient_solve::compute_gr_update(a, &residue, &mut x, &mut support);
                 utility::compute_residue(a, &x, b, &mut residue);
             }
             Method::CG => {
@@ -97,7 +105,6 @@ pub fn exec(
                 pgr_solve::compute_precond_residue(&mut residue, a, &d, alpha);
             }
         };
-
         count += 1;
     }
     panic!("Method didn't converged");

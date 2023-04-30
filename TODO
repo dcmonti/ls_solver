@@ -1,7 +1,7 @@
-#1 Rilanciare i benchmark e aggiornare i grafici di time
-#2 plots/iteration: rifare grafici con 4 metodi base su ciascuna matrice, grafico con PG da solo (su SPA1 e SPA2)
-#3 plots/rel_error: rifare grafici con 4 metodi base su ciascuna matrice (togliere PG), PG da solo (su SPA1 e SPA2)
-#4 plots/time: fare grafico PG su SPA2 come per SPA1, rifare tempi SPA1 e SPA2 senza PG e GR (quindi farli a parte)
+[X] Rilanciare i benchmark e aggiornare i grafici di time 
+[X] plots/iteration: rifare grafici con 4 metodi base su ciascuna matrice, grafico con PG da solo (su SPA1 e SPA2)
+[X] plots/rel_error: rifare grafici con 4 metodi base su ciascuna matrice (togliere PG), PG da solo (su SPA1 e SPA2)
+[X] plots/time: fare grafico PG su SPA2 come per SPA1, rifare tempi SPA1 e SPA2 senza PG e GR (quindi farli a parte)
 #5 plots/memory: asse delle x spiegare snapshot di byte come unita di misura e non i secondi passati
-#6 overleaf: pdf ritagliare bianco (memory per ora.........)
-#7 criterion run pulita per repository
+[X] overleaf: pdf ritagliare bianco (memory per ora.........)
+[X] criterion run pulita per repository

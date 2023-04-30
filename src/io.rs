@@ -1,5 +1,8 @@
 use core::panic;
-use std::{fs::File, io::{BufReader, BufRead}};
+use std::{
+    fs::File,
+    io::{BufRead, BufReader},
+};
 
 use crate::{api::Method, utility::Setting};
 use clap::Parser;
@@ -93,7 +96,7 @@ fn get_vector_path() -> String {
 pub fn read_matrix() -> CsrMatrix<f64> {
     let file_path = get_matrix_path();
     let sparse_matrix = nasp::io::load_coo_from_matrix_market_file(file_path).unwrap();
-    
+
     CsrMatrix::from(&sparse_matrix)
 }
 pub fn read_vector() -> (DVector<f64>, Setting) {
@@ -127,8 +130,6 @@ fn parse_standard_vector(file_path: &String) -> DVector<f64> {
 }
 fn parse_mtx_vector(file_path: &String) -> DVector<f64> {
     let coo_matrix: CooMatrix<f64> = nasp::io::load_coo_from_matrix_market_file(file_path).unwrap();
-
-    
 
     match (coo_matrix.ncols(), coo_matrix.nrows()) {
         (1, _) => {

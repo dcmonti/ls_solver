@@ -1,9 +1,9 @@
-use nalgebra::{DVector, Const};
+use nalgebra::{Const, DVector};
 use nalgebra_sparse::{io::load_coo_from_matrix_market_file, CsrMatrix};
 
 use crate::{
-    solver,
-    utility::{compute_rel_err, Stat, init_b}, io,
+    io, solver,
+    utility::{compute_rel_err, init_b, Stat},
 };
 
 #[derive(Debug)]

@@ -66,7 +66,6 @@ pub fn compute_residue(
 ) {
     spmm_csr_dense(0_f64, &mut *residue, 1.0, Op::NoOp(a), Op::NoOp(x));
     residue.axpy(1.0, b, -1.0);
-
 }
 
 pub fn size_are_compatible(a: &CsrMatrix<f64>, vector: &DVector<f64>, setting: &Setting) {

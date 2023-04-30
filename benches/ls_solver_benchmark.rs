@@ -1,6 +1,9 @@
 use std::time::Duration;
 
-use criterion::{criterion_group, criterion_main, BenchmarkId, Criterion, SamplingMode};
+use criterion::{
+    criterion_group, criterion_main, AxisScale, BenchmarkId, Criterion, PlotConfiguration,
+    SamplingMode,
+};
 use ls_solver::{
     api::{solve_linear_system, Method},
     utility::init_b,
@@ -168,6 +171,9 @@ fn precond_vs_gradient_spa1(c: &mut Criterion) {
     group.sampling_mode(SamplingMode::Flat);
     group.measurement_time(Duration::from_secs(100));
     group.warm_up_time(Duration::from_secs(100));
+    let plot_config = PlotConfiguration::default().summary_scale(AxisScale::Logarithmic);
+    group.plot_config(plot_config);
+
     for met in [Method::GR, Method::PG] {
         group.bench_with_input(BenchmarkId::new("4", met_to_str(&met)), &met, |b, met| {
             b.iter(|| {
@@ -205,6 +211,8 @@ fn precond_vs_gradient_spa2(c: &mut Criterion) {
     group.sampling_mode(SamplingMode::Flat);
     group.measurement_time(Duration::from_secs(100));
     group.warm_up_time(Duration::from_secs(100));
+    let plot_config = PlotConfiguration::default().summary_scale(AxisScale::Logarithmic);
+    group.plot_config(plot_config);
 
     for met in [Method::GR, Method::PG] {
         group.bench_with_input(BenchmarkId::new("4", met_to_str(&met)), &met, |b, met| {
@@ -242,11 +250,13 @@ pub fn met_to_str(met: &Method) -> String {
 
 criterion_group!(
     benches,
+    /*
     vem1_benchmark,
     vem2_benchmark,
     spa1_benchmark,
-    spa2_benchmark, 
+    spa2_benchmark,
     precond_vs_gradient_spa1,
+    */
     precond_vs_gradient_spa2
 );
 criterion_main!(benches);
