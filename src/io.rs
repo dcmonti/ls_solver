@@ -1,7 +1,7 @@
 use core::panic;
 use std::{
     fs::File,
-    io::{BufRead, BufReader},
+    io::{BufRead, BufReader, Write},
 };
 
 use crate::{api::Method, utility::Setting};
@@ -31,6 +31,15 @@ struct Args {
         default_value = "None"
     )]
     vector_path: String,
+
+    #[clap(
+        help_heading = "I/O",
+        short = 'o',
+        long = "output",
+        default_value = "None",
+        help = "Output file with approximate solution, if None solution will not be printed"
+    )]
+    output_path: String,
 
     // Iterative method
     #[clap(
@@ -65,7 +74,7 @@ struct Args {
     // Omega
     #[clap(
         help_heading = "Settings",
-        short = 'o',
+        short = 'O',
         long = "omega",
         default_value_t = 1.0,
         help = "Set relax factor with float desired\nUsed only if method is 0 or 1"
@@ -190,5 +199,25 @@ fn get_setting() -> Setting {
         0 => Setting::Solve,
         1 => Setting::Precision,
         _ => panic!("-s must be 0 or 1, try --help for more info"),
+    }
+}
+
+fn get_output_path() -> Result<String, ()> {
+    let args = Args::parse();
+    if args.output_path.eq(&"None") {
+        Err(())
+    } else {
+        Ok(args.output_path)
+    }
+}
+
+pub fn write_to_output_path(result: &[f64]) {
+    match get_output_path() {
+        Ok(path) => {
+            let output_data: Vec<String> = result.iter().map(|n| n.to_string()).collect();
+            let mut file = File::create(path).unwrap();
+            writeln!(file, "{}", output_data.join("\n")).unwrap();
+        }
+        Err(_) => {}
     }
 }

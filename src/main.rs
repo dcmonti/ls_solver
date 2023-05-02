@@ -26,6 +26,7 @@ fn main() {
                 result.get_iterations(),
                 result.get_time()
             );
+            io::write_to_output_path(result.get_solution().as_slice())
         }
         Setting::Precision => {
             // solution is vector
@@ -36,11 +37,17 @@ fn main() {
                 utility::compute_rel_err(&vector, result.get_solution()),
                 result.get_iterations(),
                 result.get_time()
-            )
+            );
+            io::write_to_output_path(result.get_solution().as_slice())
         }
         Setting::Solve => {
             let result = solver::exec(&a, &vector, method, tol, max_iter, omega);
-            println!("{}", result.to_string())
+            println!(
+                "Iteration: {}\nTime: {} ms",
+                result.get_iterations(),
+                result.get_time()
+            );
+            io::write_to_output_path(result.get_solution().as_slice())
         }
     }
 }

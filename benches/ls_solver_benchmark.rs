@@ -250,13 +250,11 @@ pub fn met_to_str(met: &Method) -> String {
 
 criterion_group!(
     benches,
-    /*
     vem1_benchmark,
     vem2_benchmark,
     spa1_benchmark,
     spa2_benchmark,
     precond_vs_gradient_spa1,
-    */
     precond_vs_gradient_spa2
 );
 criterion_main!(benches);
