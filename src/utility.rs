@@ -4,6 +4,8 @@ use nalgebra_sparse::{
     CsrMatrix,
 };
 
+use crate::api::Method;
+
 #[derive(Debug)]
 pub struct Stat {
     solution: DVector<f64>,
@@ -82,4 +84,29 @@ pub fn size_are_compatible(a: &CsrMatrix<f64>, vector: &DVector<f64>, setting: &
 pub fn compute_rel_err(solution: &DVector<f64>, x: &DVector<f64>) -> f64 {
     let diff = solution - x;
     diff.norm() / solution.norm()
+}
+
+pub fn init_support_vectors(
+    method: &Method,
+    a: &CsrMatrix<f64>,
+    x: &DVector<f64>,
+    b: &DVector<f64>,
+) -> (DVector<f64>, DVector<f64>) {
+    let (direction, support) = match method {
+        Method::JA | Method::GR => (
+            DVector::from(vec![0.0]),
+            DVector::from_element(a.ncols(), 0.0),
+        ),
+        Method::CG => {
+            let mut tmp_d = DVector::from_element(a.ncols(), 0.0);
+            compute_residue(a, &x, b, &mut tmp_d);
+            (tmp_d, DVector::from_element(a.ncols(), 0.0))
+        }
+        Method::PG => (
+            DVector::from_element(a.ncols(), 0.0),
+            DVector::from(vec![0.0]),
+        ),
+        _ => (DVector::from(vec![0.0]), DVector::from(vec![0.0])),
+    };
+    (direction, support)
 }
