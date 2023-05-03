@@ -5,3 +5,4 @@
 #5 plots/memory: asse delle x spiegare snapshot di byte come unita di misura e non i secondi passati
 [X] overleaf: pdf ritagliare bianco (memory per ora.........)
 [X] criterion run pulita per repository
+#8 commentare funzioni in API, aggiungere doc al repository, dire nel report sezione 2.1.2 che si puo trovare la spiegazione.
