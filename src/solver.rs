@@ -1,7 +1,7 @@
 use crate::{
-    api::Method,
+    api::{Method, Stat},
     cg_solve, gradient_solve, gs_solve, jacobi_solve, pgr_solve,
-    utility::{self, Stat},
+    utility,
 };
 use cpu_time::ProcessTime;
 use nalgebra::{self, DVector};

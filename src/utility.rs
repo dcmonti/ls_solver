@@ -6,42 +6,6 @@ use nalgebra_sparse::{
 
 use crate::api::Method;
 
-#[derive(Debug)]
-pub struct Stat {
-    solution: DVector<f64>,
-    time: u128,
-    iter: u32,
-}
-
-impl Stat {
-    pub fn new(solution: DVector<f64>, time: u128, iter: u32) -> Stat {
-        Stat {
-            solution,
-            time,
-            iter,
-        }
-    }
-    pub fn get_solution(&self) -> &DVector<f64> {
-        &self.solution
-    }
-
-    pub fn get_time(&self) -> u128 {
-        self.time
-    }
-
-    pub fn get_iterations(&self) -> u32 {
-        self.iter
-    }
-
-    pub fn to_string(&self) -> String {
-        format!(
-            "Result:\n{:?}\nMethod converged in \t{} iterations \t({} ms)",
-            self.get_solution(),
-            self.get_iterations(),
-            self.get_time()
-        )
-    }
-}
 
 #[derive(Debug)]
 pub enum Setting {

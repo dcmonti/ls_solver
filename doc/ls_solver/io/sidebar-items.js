@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["get_max_iter","get_method","get_omega","get_tol","parse_vector","read_matrix","read_vector","write_to_output_path"]};
