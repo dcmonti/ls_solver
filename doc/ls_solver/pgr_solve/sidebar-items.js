@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["compute_precond_residue","compute_z","get_precond_alpha_k"]};

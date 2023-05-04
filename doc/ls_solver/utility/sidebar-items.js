@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Setting"],"fn":["compute_rel_err","compute_residue","init_b","init_support_vectors","size_are_compatible","tolerance_reached"]};

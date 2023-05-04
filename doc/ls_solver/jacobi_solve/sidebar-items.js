@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["compute_jacobi_update","get_jacobi_p"]};
