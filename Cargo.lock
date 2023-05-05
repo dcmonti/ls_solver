@@ -526,6 +526,7 @@ dependencies = [
 name = "ls_solver"
 version = "0.1.0"
 dependencies = [
+ "cc",
  "clap 4.2.5",
  "cpu-time",
  "criterion",

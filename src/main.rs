@@ -4,7 +4,15 @@ use ls_solver::{
 };
 use nalgebra::{self, DVector};
 
+extern "C" {
+    fn sum_int(a: i32, b: i32) -> i32;
+}
+
 fn main() {
+    unsafe{
+        let x = sum_int(1, 2);
+        println!("RISULTATO {x}");
+    }
     let a = io::read_matrix();
     let (vector, setting) = io::read_vector();
 
