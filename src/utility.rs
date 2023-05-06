@@ -63,7 +63,7 @@ pub fn init_support_vectors(
         ),
         Method::CG => {
             let mut tmp_d = DVector::from_element(a.ncols(), 0.0);
-            compute_residue(a, &x, b, &mut tmp_d);
+            compute_residue(a, x, b, &mut tmp_d);
             (tmp_d, DVector::from_element(a.ncols(), 0.0))
         }
         Method::PG => (

@@ -1,3 +1,5 @@
+use std::fmt;
+
 use nalgebra::{Const, DVector};
 use nalgebra_sparse::{io::load_coo_from_matrix_market_file, CsrMatrix};
 
@@ -78,14 +80,10 @@ impl Stat {
     pub fn get_iterations(&self) -> u32 {
         self.iter
     }
-
-    pub fn to_string(&self) -> String {
-        format!(
-            "Result:\n{:?}\nMethod converged in \t{} iterations \t({} ms)",
-            self.get_solution(),
-            self.get_iterations(),
-            self.get_time()
-        )
+}
+impl fmt::Display for Stat {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "Result:\n{:?}\nMethod converged in \t{} iterations \t({} ms)",self.solution ,self.iter, self.time)
     }
 }
 

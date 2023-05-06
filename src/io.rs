@@ -212,12 +212,9 @@ fn get_output_path() -> Result<String, ()> {
 }
 
 pub fn write_to_output_path(result: &[f64]) {
-    match get_output_path() {
-        Ok(path) => {
-            let output_data: Vec<String> = result.iter().map(|n| n.to_string()).collect();
-            let mut file = File::create(path).unwrap();
-            writeln!(file, "{}", output_data.join("\n")).unwrap();
+    if let Ok(path) = get_output_path() {
+        let output_data: Vec<String> = result.iter().map(|n| n.to_string()).collect();
+        let mut file = File::create(path).unwrap();
+        writeln!(file, "{}", output_data.join("\n")).unwrap();
         }
-        Err(_) => {}
-    }
 }
