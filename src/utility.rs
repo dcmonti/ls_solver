@@ -6,7 +6,6 @@ use nalgebra_sparse::{
 
 use crate::api::Method;
 
-
 #[derive(Debug)]
 pub enum Setting {
     Solve,

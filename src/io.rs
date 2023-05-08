@@ -187,8 +187,19 @@ pub fn get_max_iter() -> i32 {
 pub fn get_omega() -> f64 {
     let args = Args::parse();
     let mut omega = args.omega;
-    if !(0.0..=1.0).contains(&omega) {
-        omega = 1.0
+    let method = args.method;
+    match method {
+        0 => {
+            if !(0.0..=1.0).contains(&omega) {
+                omega = 1.0
+            }
+        }
+        1 => {
+            if !(0.0..=2.0).contains(&omega) {
+                omega = 1.0
+            }
+        }
+        _ => omega = 1.0,
     }
     omega
 }
@@ -216,5 +227,5 @@ pub fn write_to_output_path(result: &[f64]) {
         let output_data: Vec<String> = result.iter().map(|n| n.to_string()).collect();
         let mut file = File::create(path).unwrap();
         writeln!(file, "{}", output_data.join("\n")).unwrap();
-        }
+    }
 }

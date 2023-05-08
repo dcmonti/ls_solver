@@ -1,7 +1,6 @@
 use crate::{
     api::{Method, Stat},
-    cg_solve, gradient_solve, gs_solve, jacobi_solve, pgr_solve,
-    utility,
+    cg_solve, gradient_solve, gs_solve, jacobi_solve, pgr_solve, utility,
 };
 use cpu_time::ProcessTime;
 use nalgebra::{self, DVector};
@@ -96,5 +95,5 @@ pub fn exec(
         };
         count += 1;
     }
-    panic!("Method didn't converged");
+    panic!("Method didn't converged, try with higher max-iter");
 }

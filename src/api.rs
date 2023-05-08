@@ -8,8 +8,8 @@ use crate::{
     utility::{compute_rel_err, init_b},
 };
 
-/// Method is used to set the method used by the routine. 
-/// 
+/// Method is used to set the method used by the routine.
+///
 /// With:
 /// * **Method::JA** = Jacobi
 /// * **Method::GS** = Gauss-Seidel
@@ -37,7 +37,7 @@ impl Method {
     }
 }
 /// Performace is a struct returned by [compute_precision].
-/// 
+///
 /// It contains three fields:
 /// * **rel_err**: the relative error of the computed result against the correct one
 /// * **time**: the time the routine take to solve the system
@@ -49,7 +49,7 @@ pub struct Performance {
 }
 
 /// Stat is a struct returned by [solve_linear_system].
-/// 
+///
 /// It contains three fields:
 /// * **solution**: the solution computed by the routine
 /// * **time**: the time the routine take to solve the system
@@ -83,7 +83,11 @@ impl Stat {
 }
 impl fmt::Display for Stat {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "Result:\n{:?}\nMethod converged in \t{} iterations \t({} ms)",self.solution ,self.iter, self.time)
+        write!(
+            f,
+            "Result:\n{:?}\nMethod converged in \t{} iterations \t({} ms)",
+            self.solution, self.iter, self.time
+        )
     }
 }
 
@@ -110,7 +114,7 @@ pub fn init_random_vector(size: usize) -> DVector<f64> {
 }
 
 /// Solves the linear system ax=b and returns a [Stat] instance:
-/// 
+///
 /// ### Arguments:
 /// * **a**: matrix
 /// * **b**: vector of constant terms
@@ -130,11 +134,11 @@ pub fn solve_linear_system(
 }
 
 /// Determines the accuracy of x (solution computed by the routine) against the correct one and returns an istance of [Performance].
-/// 
+///
 /// Where x is the solution of the system ax = b, with b := a*solution.
-/// 
+///
 /// ### Arguments:
-/// * **a**: matrix 
+/// * **a**: matrix
 /// * **solution**: the given solution of the system
 /// * **method**: an istance of the enum Method
 /// * **tol**: the tolerance required to stop the routine
