@@ -1,8 +1,9 @@
+use std::time::Instant;
+
 use crate::{
     api::{Method, Stat},
     cg_solve, gradient_solve, gs_solve, jacobi_solve, pgr_solve, utility,
 };
-use cpu_time::ProcessTime;
 use nalgebra::{self, DVector};
 use nalgebra_sparse::CsrMatrix;
 
@@ -14,7 +15,7 @@ pub fn exec(
     max_iter: i32,
     omega: f64,
 ) -> Stat {
-    let start = ProcessTime::now();
+    let start = Instant::now();
     let size = a.ncols();
     let b_norm = b.norm();
 
