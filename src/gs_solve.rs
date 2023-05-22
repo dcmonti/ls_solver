@@ -1,13 +1,21 @@
 use nalgebra::{self, DVector};
 use nalgebra_sparse::{
     ops::{serial::spsolve_csc_lower_triangular, Op},
-    CscMatrix, CsrMatrix,
+    CooMatrix, CscMatrix, CsrMatrix,
 };
 
 #[inline]
 pub fn get_gs_p(a: &CsrMatrix<f64>, omega: f64) -> CscMatrix<f64> {
-    let p = a.lower_triangle() / omega;
-    CscMatrix::from(&p)
+    let mut lt = CooMatrix::from(&a.lower_triangle());
+    lt.triplet_iter_mut().for_each(|(row, col, val)| {
+        if row == col {
+            *val = *val / omega
+        } else {
+            *val = *val
+        }
+    });
+
+    CscMatrix::from(&lt)
 }
 
 #[inline]
