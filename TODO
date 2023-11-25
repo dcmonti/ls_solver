@@ -1,8 +1,0 @@
-[X] Rilanciare i benchmark e aggiornare i grafici di time 
-[X] plots/iteration: rifare grafici con 4 metodi base su ciascuna matrice, grafico con PG da solo (su SPA1 e SPA2)
-[X] plots/rel_error: rifare grafici con 4 metodi base su ciascuna matrice (togliere PG), PG da solo (su SPA1 e SPA2)
-[X] plots/time: fare grafico PG su SPA2 come per SPA1, rifare tempi SPA1 e SPA2 senza PG e GR (quindi farli a parte)
-[X] plots/memory: asse delle x spiegare snapshot di byte come unita di misura e non i secondi passati
-[X] overleaf: pdf ritagliare bianco (memory per ora.........)
-[X] criterion run pulita per repository
-[X] commentare funzioni in API, aggiungere doc al repository, dire nel report sezione 2.1.2 che si puo trovare la spiegazione.
