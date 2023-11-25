@@ -1,5 +1,6 @@
 [package]
 name = "ls_solver"
+description = "A simple tool and library for linear system solution"
 version = "0.1.0"
 edition = "2021"
 authors = ["Davide Monti <d.monti11@campus.unimib.it>", "Samuele Campanella <s.campanella3@campus.unimib.it>"]
