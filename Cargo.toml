@@ -4,7 +4,7 @@ description = "A simple tool and library for linear system solution"
 version = "0.1.0"
 edition = "2021"
 authors = ["Davide Monti <d.monti11@campus.unimib.it>", "Samuele Campanella <s.campanella3@campus.unimib.it>"]
-keywords = ["linear system solver", "sparse matrices", "linear algebra"]
+keywords = ["linear_system_solver", "sparse_matrices", "linear_algebra"]
 repository = "https://github.com/dcmonti/ls_solver"
 license-file = "LICENSE"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
